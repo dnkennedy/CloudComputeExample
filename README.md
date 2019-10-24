@@ -75,7 +75,8 @@ Thus, once these inputs are handled, we:
 > scp -i DNK_CRNC.pem ~/bin/abcd_kwyker_aws.sh ubuntu@${IP}:~/bin/.
 
 **3**: Execution directive via aws ssm (reuired that the instance has its ‘ssm’ awareness turned on:
-    > aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" \
+
+> aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" \
  --instance-ids "$IID" --parameters "commands=~ubuntu/bin/abcd_kwyker_aws.sh $s3filenam $basenam" \
  --timeout-seconds "600" --max-concurrency "50" --max-errors "0" \
  --output-s3-bucket-name "kwyktest" --region us-east-1 --profile reprodnk
@@ -84,21 +85,24 @@ Thus, once these inputs are handled, we:
 
 Details, aws.sh
 The aws-side operations are relatively straightforward and are encoded in the script to be run on the instance::
-Copy the named S3 data to a tmp directory in the instance 
-Launch the analysis ‘container’
-Copy the results to a named S3 bucket
-‘Terminate’ the running instance
+1. Copy the named S3 data to a tmp directory in the instance 
+1. Launch the analysis ‘container’
+1. Copy the results to a named S3 bucket
+1. ‘Terminate’ the running instance
 
-1: I accomplish with the AWS commandline interface (CLI):
-     > aws s3 cp $S3filenam tmp --profile NDA
+**1**: I accomplish with the AWS commandline interface (CLI):
 
-2: Docker run as:
-    > docker run -i --rm -v $(pwd):/data neuronets/kwyk:latest-cpu -m bvwn_multi_prior input output
+> aws s3 cp $S3filenam tmp --profile NDA
 
-3: Again, AWS CLI:
-  > aws s3 cp output s3://kwyktest/output/$basenam --recursive --profile reprodnk
+**2**: Docker run as:
+    
+> docker run -i --rm -v $(pwd):/data neuronets/kwyk:latest-cpu -m bvwn_multi_prior input output
 
-4: And finally, the linux ‘poweroff’ command. Note: ‘poweroff’ puts the instance into an AWS ‘stop’ state. It no longer accumulates execution charges, but the basic computer system persists (and thus can be re-manipulated for state and machine type, for example) and will accumulate some storage costs. Extensions to this protocol to put the computer state into a user selected final state.
+**3**: Again, AWS CLI:
+  
+> aws s3 cp output s3://kwyktest/output/$basenam --recursive --profile reprodnk
+
+**4**: And finally, the linux ‘poweroff’ command. Note: ‘poweroff’ puts the instance into an AWS ‘stop’ state. It no longer accumulates execution charges, but the basic computer system persists (and thus can be re-manipulated for state and machine type, for example) and will accumulate some storage costs. Extensions to this protocol to put the computer state into a user selected final state.
 
 
 ## Putting it Together
