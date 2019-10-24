@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eu
 
 echo "abcd_kwyker_awslocal: Running kwyk container on EC2 resource on ABCD S3 file on aws - local controller"
 
@@ -14,8 +15,15 @@ if [ "$#" -ne 2 ]; then
   echo "Expected usage: abcd_kwyker_aws.sh S3_file_name outputdirectoryname" 
   exit 10
 fi
+
+# setup variables
 s3filenam=$1
 basenam=$2
+
+IID=i-00c6af722eee5851b
+remotescript=abcd_kwyker_aws.sh
+localscriptpath=~/bin
+remotescriptpath=~ubuntu/bin
 
 # We are using aws 'profile' for credential management.
 # We expect the .aws/configuration file to be pushed from your local system (i.e. here)
@@ -36,9 +44,9 @@ basenam=$2
 
 # Start Instance
 echo "Launching and waiting"
-IID=i-00c6af722eee5851b
 echo "IID = $IID"
 aws ec2 start-instances --instance-ids $IID --profile reprodnk 
+#aws ec2 wait instance-running --instance-ids $IID --profile reprodnk
 aws ec2 wait instance-status-ok --instance-ids $IID --profile reprodnk
 
 #Get ip, $IP and instanceID
@@ -47,14 +55,17 @@ IP=`aws ec2 describe-instances --instance-ids $IID --query 'Reservations[*].Inst
 echo "Found IP as $IP"
 
 #Push Creds to instance
-scp -i DNK_CRNC.pem ~/.aws/credentials ubuntu@${IP}:~/.aws/.
+scp -o StrictHostKeyChecking=no -i DNK_CRNC.pem ~/.aws/credentials ubuntu@${IP}:~/.aws/.
 
 #push script to instance
-scp -i DNK_CRNC.pem ~/bin/abcd_kwyker_aws.sh ubuntu@${IP}:~/bin/.
+scp -i DNK_CRNC.pem ${localscriptpath}/$remotescript ubuntu@${IP}:${remotescriptpath}/.
 
 # Launch process on instance
+
+echo "commands=${remotescriptpath}/$remotescript $s3filenam $basenam"
+
 aws ssm send-command --document-name "AWS-RunShellScript" --document-version "1" \
- --instance-ids "$IID" --parameters "commands=~ubuntu/bin/abcd_kwyker_aws.sh $s3filenam $basenam" \
+ --instance-ids "$IID" --parameters "commands=${remotescriptpath}/$remotescript $s3filenam $basenam" \
  --timeout-seconds "600" --max-concurrency "50" --max-errors "0" \
  --output-s3-bucket-name "kwyktest" --region us-east-1 --profile reprodnk
 
