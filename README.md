@@ -3,7 +3,7 @@ A repo for an example S3 to EC2 container processing with export back to S3 usin
 
 A draft GoogleDoc readme is available at: https://docs.google.com/document/d/11Eb6Fp3sD748p3V19m5isem6yCcjpeoAsjWX_1DlCoc/edit?usp=sharing
 
-Overtime, that content will be incorporate into this document.
+The following is a quick MD-ification of that prettier document:
 
 ## Overview
 Efficiency is key in cloud computing. Selecting the most efficient hardware for the job, and handling your machine and machine-job interactions efficiently. In this example, in my clumsy way, I work through an example that I hope will be instructive to others. In this simple example, I hope to illustrate the key points and concepts that need to be solved, one way or another, in any application. My solutions are hacks and one-offs, but I hope that this example is helpful in creating better and more robust core infrastructure for these types of efforts.
