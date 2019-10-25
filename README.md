@@ -112,8 +112,8 @@ The aws-side operations are relatively straightforward and are encoded in the sc
 ## Putting it Together
 In my example, the processing is executed in the following fashion:
 
-> abcd_kwyker_awslocal.sh \ s3://NDAR_Central_2/submission_14921/NDARINVARWXFNJF_baselineYear1Arm1_ABCD-MPROC-T1_20170811130118.tgz \
-NDARINVARWXFNJF_baselineYear1Arm1_ABCD-MPROC-T1_20170811130118_v9
+> abcd_kwyker_awslocal.sh \ s3://NDAR_Central_2/submission_14921/NDARINVARWXFNJF_baselineYear1Arm1_ABCD-MPROC-T1.tgz \
+NDARINVARWXFNJF_baselineYear1Arm1_ABCD-MPROC-T1_v9
 
 Remember, this presupposes my [NDA] persona is up to date, that my AWS instance exists (but not necessarily running), my personal AWS persona (reprodnk, in this example) is valid, I have the .pem file associated with my instance and I have a S3 bucket called ‘kwyktest’.
 
