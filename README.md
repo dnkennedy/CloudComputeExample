@@ -3,6 +3,10 @@ A repo for an example S3 to EC2 container processing with export back to S3 usin
 
 A draft GoogleDoc readme is available at: https://docs.google.com/document/d/11Eb6Fp3sD748p3V19m5isem6yCcjpeoAsjWX_1DlCoc/edit?usp=sharing
 
+We start from a super simple problem: a S3 MR image and a container to run on it (abcd_'container'), that we will then look at the generalizations thereof.
+
+The first generalization is to take a list of S3 MR images for analysis with the container (multiabcd_'container').
+
 The following is a quick MD-ification of that prettier document:
 
 ## Overview
@@ -117,4 +121,5 @@ This command (at the moment) only needs the S3 link to an input dataset, and an 
 
 The local script completes after successful transmission of the processing command to the AWS instance. The remote process runs for about 8 minutes in this specific example. The instance ‘stops’ upon completion, but as yet we do not provide notification back to the executioner, which is an addition that should be made. So, at the moment, you can monitor your EC2 console to verify completion.  Additional safeguards should be added to proven runaway instances in the more complete version of this.
 
-
+# Multiple inputfiles/outputdirectories
+The multiabcd_kwyk_{aws,awslocal}.sh scripts takes an input file (as an input to the multiabcd_kwyk_awslocal.sh). Thie file is includes an S3 path and output S3 path pair per line. The AWS instance will run and output each of these lines prior to terminating.
