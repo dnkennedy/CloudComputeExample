@@ -96,5 +96,5 @@ done 10</home/ubuntu/dome.txt
 # the end
 echo "Done, thanks!"
 echo "Terminating"
-#poweroff
+poweroff
 exit 
