@@ -20,8 +20,7 @@ fi
 s3filenam=$1
 basenam=$2
 
-#IID=i-00c6af722eee5851b
-IID=i-0e8750dd1c7e02355
+IID=i-00c6af722eee5851b
 remotescript=abcd_kwyker_aws.sh
 localscriptpath=~/bin
 remotescriptpath=~ubuntu/bin
@@ -56,10 +55,10 @@ IP=`aws ec2 describe-instances --instance-ids $IID --query 'Reservations[*].Inst
 echo "Found IP as $IP"
 
 #Push Creds to instance
-scp -o StrictHostKeyChecking=no -i ~/DNK_CRNC.pem ~/.aws/credentials ubuntu@${IP}:~/.aws/.
+scp -o StrictHostKeyChecking=no -i DNK_CRNC.pem ~/.aws/credentials ubuntu@${IP}:~/.aws/.
 
 #push script to instance
-scp -i ~/DNK_CRNC.pem ${localscriptpath}/$remotescript ubuntu@${IP}:${remotescriptpath}/.
+scp -i DNK_CRNC.pem ${localscriptpath}/$remotescript ubuntu@${IP}:${remotescriptpath}/.
 
 # Launch process on instance
 
