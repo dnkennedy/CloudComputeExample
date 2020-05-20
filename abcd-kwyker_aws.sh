@@ -22,6 +22,11 @@ basenam=$2
 # We expect the .aws/configuration file to be pushed from your local system
 
 # move creds from user ubuntu to root
+# Create /root/.aws directory if not there...
+if [ ! -d /root/.aws ] ; then
+  echo ".aws Directory dosen't exist, creating"
+  mkdir /root/.aws
+fi
 cp ~ubuntu/.aws/credentials /root/.aws/credentials
 
 # TODO insert a checker to see if you have a valid and currently active 

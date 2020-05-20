@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-echo "abcd_kwyker_awslocal: Running kwyk container on EC2 resource on ABCD S3 file on aws - local controller"
+echo "abcd-kwyker_awslocal: Running kwyk container on EC2 resource on ABCD S3 file on aws - local controller"
 
 # This is the main script, for local management of the analysis process, that, given
 # the S3 path to an anatomic case, manages its fetch, kwyk run, and 'post' to
@@ -12,7 +12,7 @@ echo "abcd_kwyker_awslocal: Running kwyk container on EC2 resource on ABCD S3 fi
 # Check usage, 2 argument expected.
 if [ "$#" -ne 2 ]; then
   echo "Illegal number of parameters provided"
-  echo "Expected usage: abcd_kwyker_aws.sh S3_file_name outputdirectoryname" 
+  echo "Expected usage: abcd-kwyker_local.sh S3_file_name outputdirectoryname" 
   exit 10
 fi
 
@@ -20,10 +20,12 @@ fi
 s3filenam=$1
 basenam=$2
 
-#IID=i-00c6af722eee5851b
+# Identify AWS EC2 instance ID
 IID=i-0e8750dd1c7e02355
-remotescript=abcd_kwyker_aws.sh
-localscriptpath=~/bin
+
+remotescript=abcd-kwyker_aws.sh
+#localscriptpath=~/bin
+localscriptpath=~/GitHub/CloudComputeExample
 remotescriptpath=~ubuntu/bin
 
 # We are using aws 'profile' for credential management.
@@ -47,7 +49,6 @@ remotescriptpath=~ubuntu/bin
 echo "Launching and waiting"
 echo "IID = $IID"
 aws ec2 start-instances --instance-ids $IID --profile reprodnk 
-#aws ec2 wait instance-running --instance-ids $IID --profile reprodnk
 aws ec2 wait instance-status-ok --instance-ids $IID --profile reprodnk
 
 #Get ip, $IP and instanceID
@@ -55,10 +56,11 @@ echo "Get ip of instance"
 IP=`aws ec2 describe-instances --instance-ids $IID --query 'Reservations[*].Instances[*].PublicIpAddress' --output text --profile reprodnk`
 echo "Found IP as $IP"
 
-#Push Creds to instance
+# Push stuff to instance
+# Push Creds to instance
 scp -o StrictHostKeyChecking=no -i ~/DNK_CRNC.pem ~/.aws/credentials ubuntu@${IP}:~/.aws/.
 
-#push script to instance
+# Push script to instance
 scp -i ~/DNK_CRNC.pem ${localscriptpath}/$remotescript ubuntu@${IP}:${remotescriptpath}/.
 
 # Launch process on instance
